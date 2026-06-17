@@ -1,0 +1,10 @@
+# Locked for Python 3.10–3.12 (Windows/Linux). Docker image uses same file.
+torch==2.2.2
+numpy==1.26.4
+scipy==1.11.4
+biopython==1.83
+pybind11==2.11.1
+ptflops==0.7.2.2
+pyfaidx==0.8.1.1
+pandas==2.1.4
+tqdm==4.66.1

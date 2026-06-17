@@ -1,0 +1,81 @@
+{
+  "assembly": "T2T-CHM13v2.0",
+  "accession": "GCA_009914755.4",
+  "reference_url": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/009/914/755/GCA_009914755.4/GCA_009914755.4_ASM991475v4_genomic.fna.gz",
+  "repeatmasker_track": "v1.1",
+  "loci": {
+    "chr11_train_f1": {
+      "chromosome": "chr11",
+      "start": 46050000,
+      "end": 47000000,
+      "role": "train",
+      "family": "D11Z1_A",
+      "fold": 1
+    },
+    "chr11_train_f2": {
+      "chromosome": "chr11",
+      "start": 47000000,
+      "end": 48000000,
+      "role": "train",
+      "family": "D11Z1_B",
+      "fold": 2
+    },
+    "chr11_train_f3": {
+      "chromosome": "chr11",
+      "start": 48000000,
+      "end": 48950000,
+      "role": "validate",
+      "family": "D11Z1_C",
+      "fold": 3
+    },
+    "chr11_train_f4": {
+      "chromosome": "chr11",
+      "start": 49150000,
+      "end": 50100000,
+      "role": "validate",
+      "family": "D11Z1_D",
+      "fold": 4
+    },
+    "chr11_train_f5": {
+      "chromosome": "chr11",
+      "start": 50100000,
+      "end": 50950000,
+      "role": "validate",
+      "family": "D11Z1_E",
+      "fold": 5
+    },
+    "chrX_test_transfer": {
+      "chromosome": "chrX",
+      "start": 57550000,
+      "end": 61450000,
+      "role": "test",
+      "family": "DXZ1",
+      "fold": null
+    },
+    "failure_zone": {
+      "chromosome": "chr11",
+      "start": 48950000,
+      "end": 49150000,
+      "role": "failure_test",
+      "family": "High-Entropy-Core",
+      "fold": null
+    }
+  },
+  "leakage_filter": {
+    "min_block_bp": 100,
+    "identity_threshold": 0.95,
+    "blastn": {"penalty": -3, "reward": 1, "word_size": 11}
+  },
+  "decimation": {
+    "default_buffer_bp": 45000,
+    "autocorr_noise_limit": 1.96
+  },
+  "model_defaults": {
+    "K": 8,
+    "D": 3,
+    "dirichlet_alpha": 10.0,
+    "occupancy_tau": 5.0,
+    "convergence_delta_lnL": 1e-6,
+    "seed": 42
+  }
+}
