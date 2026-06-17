@@ -1,7 +1,8 @@
 # AC-HMM Satellites — Reproducible Genomic Sequence Modeling
 
-**Active Context Hidden Markov Model (AC-HMM)** for centromeric alpha-satellite arrays on T2T-CHM13v2.0.
+**GitHub:** [github.com/FractiAI/ac-hmm-satellites](https://github.com/FractiAI/ac-hmm-satellites) · **Release:** [v1.0.0](https://github.com/FractiAI/ac-hmm-satellites/releases/tag/v1.0.0) · **OSF:** [osf.io/m5v8q](https://osf.io/m5v8q/)
 
+**Active Context Hidden Markov Model (AC-HMM)** for centromeric alpha-satellite arrays on T2T-CHM13v2.0.
 This repository is a **standalone, peer-reviewable release** containing:
 
 - The full paper (`paper/AC_HMM_SATELLITES.md`)
@@ -12,9 +13,8 @@ This repository is a **standalone, peer-reviewable release** containing:
 - Wilcoxon signed-rank significance testing
 - Frozen manifest of T2T-CHM13 coordinates (`manifests/t2t_chm13_alpha.json`)
 
-**OSF archive (declared in paper):** https://osf.io/m5v8q/  
+**OSF archive (data + frozen configs):** https://osf.io/m5v8q/ (Project Hub: `ac-hmm-satellites`)  
 **License:** MIT
-
 ---
 
 ## Quick start (local validation)
@@ -112,18 +112,17 @@ Scripts call `torch.use_deterministic_algorithms(True)` and fixed seed **42**. C
   title={Scalable Context-Conditioned Sequence Modeling in Repetitive Genomic Regions via Sparse Emission Matrices},
   author={FractiAI},
   year={2026},
-  note={Repository: https://github.com/FractiAI/ac-hmm-satellites}
+  note={Repository: https://github.com/FractiAI/ac-hmm-satellites, OSF: https://osf.io/m5v8q/}
 }
 ```
 
 ---
 
-## Push to FractiAI
+## Links
 
-```bash
-git init
-git remote add origin git@github.com:FractiAI/ac-hmm-satellites.git
-git add .
-git commit -m "feat: AC-HMM core trellis, BLASTN purge, and 45Kb decimation pipeline v1.0"
-git push -u origin main
-```
+| Resource | URL |
+|----------|-----|
+| Repository | https://github.com/FractiAI/ac-hmm-satellites |
+| Release v1.0.0 | https://github.com/FractiAI/ac-hmm-satellites/releases/tag/v1.0.0 |
+| OSF project hub | https://osf.io/m5v8q/ |
+| Validation log | `VALIDATION.md` |

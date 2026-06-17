@@ -1,0 +1,16 @@
+# MASTER ARCHITECTURAL RUNBOOK — AC-HMM Genomic Pipeline
+
+See README.md for quick start. Full build instructions from the paper release prompt:
+
+1. Run `setup_env.sh` (or `verify_tables.ps1` on Windows)
+2. Build Docker image: `docker build -t ac-hmm-audit:v1 .`
+3. Fetch T2T-CHM13: `python tools/fetch_t2t_sequence.py`
+4. Run full audit: `./verify_tables.sh`
+
+Key files:
+- `manifests/t2t_chm13_alpha.json` — coordinate lock
+- `src/trellis.cpp` — C++ Baum-Welch core
+- `tools/verify_audit_ledger.py` — experiment runner
+
+OSF archive: https://osf.io/m5v8q/
+GitHub: https://github.com/FractiAI/ac-hmm-satellites
