@@ -214,7 +214,8 @@ docker build -t ac-hmm-audit:v1 .
 
 | Path | Purpose |
 |------|---------|
-| `paper/AC_HMM_SATELLITES.md` | Manuscript |
+| `paper/AC_HMM_SATELLITES.md` | Full manuscript (all tables) |
+| `paper/reference_tables.json` | Machine-readable Table 2–5 benchmarks |
 | `manifests/t2t_chm13_alpha.json` | Fixed coordinate provenance |
 | `src/trellis.cpp` | C++ AC-HMM core (Baum–Welch) |
 | `src/python/achmm/` | Python API + baselines |

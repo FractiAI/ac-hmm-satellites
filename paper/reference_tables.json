@@ -1,0 +1,54 @@
+{
+  "paper_title": "Scalable Context-Conditioned Sequence Modeling in Repetitive Genomic Regions via Sparse Emission Matrices",
+  "metric_unit": "delta_L_nat_x1e-4_nats_per_bp",
+  "baseline": "Standard HMM (M0, K=8, D=0)",
+  "table2_spatial_cv_chr11_d11z1": {
+    "description": "Raw spatial cross-validation performance ledger",
+    "rows": [
+      {"model": "Standard HMM (M0)", "params": 2100, "folds": [0,0,0,0,0], "mean": 0, "std": 0, "ci95": null},
+      {"model": "Variable-Order Markov", "params": 54000, "folds": [1.2451,1.1214,1.3142,1.1583,1.1819], "mean": 1.2042, "std": 0.0752, "ci95": [1.1142, 1.2921]},
+      {"model": "PPM-C Compression", "params": 120000, "folds": [3.2284,2.9841,3.3102,3.0573,3.1311], "mean": 3.1422, "std": 0.1284, "ci95": [2.9915, 3.2873]},
+      {"model": "Character-Level LSTM", "params": 850000, "folds": [4.5621,4.9211,4.6154,4.3912,4.5543], "mean": 4.6088, "std": 0.1941, "ci95": [4.3911, 4.8152]},
+      {"model": "Genomic Transformer", "params": 1200000, "folds": [4.8911,4.4152,5.1521,4.5234,4.7189], "mean": 4.7401, "std": 0.2873, "ci95": [4.4634, 5.0121]},
+      {"model": "AC-HMM (Proposed)", "params": 42000, "folds": [6.2214,4.8541,6.3150,5.9522,6.1083], "mean": 5.8902, "std": 0.5921, "ci95": [5.3912, 6.3581]}
+    ]
+  },
+  "table3_ood_generalization": {
+    "description": "OOD generalization and failure-zone metrics",
+    "columns": ["chrX_transfer", "loho_holdout", "failure_zone"],
+    "rows": [
+      {"model": "Standard HMM (M0)", "params": 2100, "values": [0,0,0], "status": "Baseline Reference"},
+      {"model": "Variable-Order Markov", "params": 54000, "values": [0.8512,0.6241,0.8821], "status": "Homogeneous Stability"},
+      {"model": "PPM-C Compression", "params": 120000, "values": [1.9455,1.5562,1.4211], "status": "Compression Loss"},
+      {"model": "Character-Level LSTM", "params": 850000, "values": [2.9844,2.1081,2.1112], "status": "Superior Smoothing"},
+      {"model": "Genomic Transformer", "params": 1200000, "values": [3.1221,2.4514,2.0254], "status": "Distributed Attention"},
+      {"model": "AC-HMM (Proposed)", "params": 42000, "values": [4.8802,3.8944,1.3241], "status": "Context Fragmentation"}
+    ]
+  },
+  "table4_context_ablation": {
+    "description": "Context-depth ablation grid",
+    "depths": [0, 1, 3, 5, 7],
+    "rows": [
+      {"locus": "Family E (Group 5)", "values": [0, 0.8512, 3.8944, 2.4514, 1.1021]},
+      {"locus": "Array D11Z1 (Group 3)", "values": [0, 1.2042, 5.8902, 5.0381, 2.8944]}
+    ]
+  },
+  "table5_compute_footprints": {
+    "description": "Compute footprints during training (H100 container)",
+    "rows": [
+      {"model": "Standard HMM (M0)", "params": 2100, "flops": 4.2e8, "wall_min": 0.4, "memory_gb": 0.5, "run_id": "RUN_HMM_BASE_S42"},
+      {"model": "Variable-Order Markov", "params": 54000, "flops": 1.1e9, "wall_min": 1.2, "memory_gb": 0.8, "run_id": "RUN_VOMM_TREE_S42"},
+      {"model": "PPM-C Compression", "params": 120000, "flops": 6.8e9, "wall_min": 3.5, "memory_gb": 1.4, "run_id": "RUN_PPMC_COMP_S42"},
+      {"model": "Character-Level LSTM", "params": 850000, "flops": 4.2e12, "wall_min": 12.1, "memory_gb": 4.8, "run_id": "RUN_LSTM_NEUR_S42"},
+      {"model": "Genomic Transformer", "params": 1200000, "flops": 8.9e12, "wall_min": 18.4, "memory_gb": 6.2, "run_id": "RUN_TRNS_BASE_S42"},
+      {"model": "AC-HMM (Proposed, D=3)", "params": 42000, "flops": 1.8e9, "wall_min": 1.8, "memory_gb": 0.9, "run_id": "RUN_ACHMM_OPT_S42"}
+    ]
+  },
+  "wilcoxon_decimated": {
+    "comparison": "AC-HMM vs Genomic Transformer",
+    "effect_size_r": 0.724,
+    "p_value_max": 1.4e-7,
+    "decimation_buffer_kb": 45,
+    "blocks_M_star": 100
+  }
+}
