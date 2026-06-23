@@ -15,8 +15,8 @@ if (-not (Test-Path ".venv\Scripts\python.exe")) {
 $py = ".\.venv\Scripts\python.exe"
 $env:PYTHONPATH = "$Root\src\python"
 
-Write-Host "=== FETCH (demo mode — synthetic repeats) ==="
-& $py tools\fetch_t2t_sequence.py --manifest manifests\t2t_chm13_alpha.json --demo
+Write-Host "=== FETCH (UCSC public T2T-CHM13 regions) ==="
+& $py tools\fetch_t2t_sequence.py --manifest manifests\t2t_chm13_alpha.json --public
 
 Write-Host "=== BUILD SPATIAL TRACK ==="
 & $py tools\build_spatial_track.py --manifest manifests\t2t_chm13_alpha.json --max-bp 100000

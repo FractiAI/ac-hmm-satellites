@@ -332,6 +332,16 @@ def main() -> None:
     results["wall_seconds"] = time.perf_counter() - t0
     results["strict_precision"] = args.strict_precision
     results["epsilon_stability"] = 6.0e-7
+    fetch_meta_path = ROOT / "raw_outputs" / "fetch_manifest.json"
+    if fetch_meta_path.exists():
+        fm = json.loads(fetch_meta_path.read_text(encoding="utf-8"))
+        results["empirical_data"] = {
+            "data_source": fm.get("data_source", "unknown"),
+            "fetch_mode": fm.get("fetch_mode", "unknown"),
+            "assembly": fm.get("assembly"),
+            "n_loci": len(fm.get("loci", {})),
+            "leakage_filter_applied": fm.get("leakage_filter_applied", False),
+        }
 
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)

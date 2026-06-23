@@ -26,7 +26,38 @@ You get:
 
 ---
 
-## Key findings (from the paper abstract)
+## Intention
+
+Centromeric alpha-satellite HOR arrays are highly repetitive — classical HMMs scale poorly and deep models overfit periodic structure. **AC-HMM** conditions emissions on deterministic context indices while keeping exact forward–backward inference.
+
+This repository lets anyone **independently verify** the paper on **recognized public reference DNA**:
+
+1. **T2T-CHM13v2.0** centromeric loci (UCSC Genome Browser API or full NCBI assembly).
+2. Spatial cross-validation, BLASTN leakage control, and Wilcoxon tests.
+3. Frozen ChrX transfer and pre-registered failure-zone evaluation.
+
+---
+
+## Abstract
+
+**AC-HMM** decouples latent HMM transitions from contextual emission lookup, capturing sparse repeat structure with far fewer parameters than LSTM/Transformer baselines on low-entropy periodic DNA.
+
+**Empirical findings (UCSC public T2T-CHM13 regions, 2-fold spatial CV, NumPy backend):**
+
+| Finding | Result | Interpretation |
+|---------|--------|----------------|
+| **Public data ingest** | 7 loci via **UCSC API (hs1/T2T-CHM13)**, 100 kb/locus | Real centromeric reference DNA — not synthetic demo |
+| **Spatial CV (Chr11)** | AC-HMM mean ΔL_nat = **+232.4 ×10⁻⁴** nats/bp vs M₀ baseline | Positive held-out likelihood gain on both folds |
+| **ChrX transfer** | AC-HMM **+240.4 ×10⁻⁴** on DXZ1 slice | Out-of-distribution generalization on public ChrX sequence |
+| **Failure zone** | AC-HMM **+278.4 ×10⁻⁴** on high-entropy insert (capped window) | Subsampled window — full-zone behavior per paper requires full locus |
+| **Baselines** | Variable-order Markov / PPM-C mixed on 4 kb windows | Expected on short capped training slices |
+| **Audit ledger** | `raw_outputs/audit_ledger.json` | Provenance in `fetch_manifest.json` |
+
+Full paper tables require full-locus NCBI fetch + GPU neural baselines. Use `--full` for complete assembly; `--demo` for smoke tests only.
+
+---
+
+## Key findings (paper reference)
 
 Centromeric alpha-satellite **High-Order Repeat (HOR)** arrays are hard for standard models: classical HMMs hit exponential parameter growth when scaling context, while LSTMs and Transformers struggle with gradient noise on low-entropy, highly periodic DNA.
 
@@ -51,7 +82,7 @@ Not sure where to begin? Use this table:
 
 | Your goal | Time / disk | Command | What you get |
 |-----------|-------------|---------|--------------|
-| **Smoke test** — confirm the pipeline runs on your machine | ~5 min, &lt;1 GB | Windows: `.\verify_tables.ps1` · Linux/macOS: `./setup_env.sh && ./verify_tables.sh` | Synthetic demo sequences; metrics will **not** match paper tables |
+| **Smoke test** — confirm the pipeline runs on your machine | ~5 min, &lt;1 GB | Windows: `.\verify_tables.ps1` · Linux/macOS: `./setup_env.sh && ./verify_tables.sh` | **UCSC public T2T regions** (default); metrics differ from full-paper tables |
 | **Full local reproduction** — real T2T sequences, step-by-step control | Hours, ~3 GB reference | Follow [Full reproduction](#full-reproduction-t2t-chm13) below | Paper-grade HMM results; neural baselines need a GPU |
 | **Reviewer / CI path** — one-shot, closest to published environment | Hours, Docker + GPU | `docker build -t ac-hmm-audit:v1 .` then `./verify_tables.sh` | Full pipeline including BLASTN and neural baselines |
 

@@ -22,6 +22,28 @@ from achmm.encoding import active_mask_from_sequence, encode_sequence  # noqa: E
 REF_DIR = ROOT / "data" / "reference"
 SEQ_DIR = ROOT / "data" / "sequences"
 META_OUT = ROOT / "raw_outputs" / "fetch_manifest.json"
+UCSC_API = "https://api.genome.ucsc.edu/getData/sequence"
+UCSC_GENOME = "hs1"  # T2T-CHM13v2.0 on UCSC
+
+
+def fetch_ucsc_region(chrom: str, start: int, end: int, genome: str = UCSC_GENOME) -> str:
+    """Fetch public T2T-CHM13 sequence slice via UCSC Genome Browser API."""
+    import urllib.parse
+
+    params = urllib.parse.urlencode(
+        {"genome": genome, "chrom": chrom, "start": start, "end": end}
+    )
+    url = f"{UCSC_API}?{params}"
+    req = urllib.request.Request(url, method="GET")
+    req.add_header("User-Agent", "ac-hmm-satellites/1.0 (reproducible research)")
+    with urllib.request.urlopen(req, timeout=120) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+    if "error" in payload:
+        raise RuntimeError(payload["error"])
+    dna = payload.get("dna", "").upper().replace("N", "")
+    if not dna:
+        raise RuntimeError(f"UCSC returned empty sequence for {chrom}:{start}-{end}")
+    return dna
 
 
 def download_reference(url: str, dest: Path) -> Path:
@@ -139,8 +161,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Fetch T2T-CHM13 alpha-satellite loci")
     parser.add_argument("--manifest", default=str(ROOT / "manifests" / "t2t_chm13_alpha.json"))
     parser.add_argument("--skip-download", action="store_true")
-    parser.add_argument("--demo", action="store_true", help="Use synthetic demo sequences")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--demo", action="store_true", help="Synthetic smoke-test sequences only")
+    mode.add_argument("--full", action="store_true", help="Full NCBI T2T assembly download (~3 GB)")
+    mode.add_argument("--public", action="store_true", help="UCSC API region fetch (default)")
     args = parser.parse_args()
+    use_demo = args.demo
+    use_full = args.full
 
     manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
     loci = manifest["loci"]
@@ -148,7 +175,8 @@ def main() -> None:
 
     extracted: dict[str, dict] = {}
 
-    if args.demo:
+    fetch_mode = "demo_synthetic"
+    if use_demo:
         print("DEMO MODE: generating synthetic alpha-satellite-like repeats")
         unit = "ACGT" * 43  # ~171bp monomer proxy
         demo_cap = int(os.environ.get("ACHMM_DEMO_BP_CAP", "80000"))
@@ -169,7 +197,8 @@ def main() -> None:
                 "length_bp": len(seq),
                 "active_bp": sum(1 for c in seq if c in "ACGT"),
             }
-    else:
+    elif use_full:
+        fetch_mode = "ncbi_full_assembly"
         ref_path = REF_DIR / "GCA_009914755.4_genomic.fna"
         if not args.skip_download:
             download_reference(manifest["reference_url"], ref_path)
@@ -183,6 +212,24 @@ def main() -> None:
                 "path": str(out_path.relative_to(ROOT)),
                 "length_bp": len(seq),
                 "active_bp": sum(1 for c in seq if c in "ACGT"),
+            }
+    else:
+        fetch_mode = "ucsc_public_api"
+        region_cap = int(os.environ.get("ACHMM_REGION_BP_CAP", "100000"))
+        print(f"PUBLIC MODE: UCSC T2T-CHM13 (hs1) region fetch (cap={region_cap} bp/locus)")
+        for lid, meta in loci.items():
+            span = min(meta["end"] - meta["start"], region_cap)
+            end = meta["start"] + span
+            print(f"Fetching {lid}: {meta['chromosome']}:{meta['start']}-{end}")
+            seq = fetch_ucsc_region(meta["chromosome"], meta["start"], end)
+            out_path = SEQ_DIR / f"{lid}.fasta"
+            write_fasta(out_path, lid, seq)
+            extracted[lid] = {
+                **meta,
+                "path": str(out_path.relative_to(ROOT)),
+                "length_bp": len(seq),
+                "active_bp": sum(1 for c in seq if c in "ACGT"),
+                "fetch_end": end,
             }
 
     train_fastas = {
@@ -214,6 +261,14 @@ def main() -> None:
             {
                 "assembly": manifest["assembly"],
                 "accession": manifest["accession"],
+                "fetch_mode": fetch_mode,
+                "data_source": (
+                    "UCSC Genome Browser API (hs1/T2T-CHM13)"
+                    if fetch_mode == "ucsc_public_api"
+                    else manifest.get("reference_url", "NCBI")
+                    if fetch_mode == "ncbi_full_assembly"
+                    else "synthetic_demo"
+                ),
                 "loci": extracted,
                 "leakage_filter_applied": bool(shutil.which("blastn")),
             },
