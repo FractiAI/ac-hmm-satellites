@@ -74,6 +74,12 @@ On **T2T-CHM13v2.0** centromeric loci, the published evaluation reports:
 
 Reproduce these results via the pipeline below; numbers land in `raw_outputs/audit_ledger.json` after a full T2T run. Full narrative and tables: `paper/AC_HMM_SATELLITES.md`.
 
+### Recursive attention loop anchor (June 2026)
+
+**Synthesis:** [WP-2026-ATTENTION-RECURSIVE-LOOP](https://www.ssvibelandiaquestfest24x365.com/whitepaper/recursive-attention-loop) · Catalog: [FractiAI/psw.vibelandia.sing13](https://github.com/FractiAI/psw.vibelandia.sing13)
+
+**Layer:** `dna_sequence` · **Validation tier:** `causal_support_preliminary` · Integrated validation: `npm run research:recursive-attention-causality`.
+
 ---
 
 ## Start here — pick your path
